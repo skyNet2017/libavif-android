@@ -6,7 +6,7 @@
 
 
 #include <jni.h>
-
+#include <stdlib.h>
 
 extern jboolean registerDecoderNativeMethods(JNIEnv *env);
 
