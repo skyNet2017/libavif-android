@@ -67,3 +67,9 @@ jboolean registerImageNativeMethods(JNIEnv *env) {
 
     return JNI_TRUE;
 }
+
+JNIEXPORT jboolean JNICALL
+Java_libavif_AvifEncoder_encode(JNIEnv *env, jobject thiz, jstring file_path, jbyteArray bytes) {
+
+
+}
