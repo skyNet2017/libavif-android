@@ -4,15 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 
+import org.devio.takephoto.wrap.TakeOnePhotoListener;
+import org.devio.takephoto.wrap.TakePhotoUtil;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
+import libavif.AvifEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         try {
             final ImageView avifImage = findViewById(R.id.avif_img);
             final byte[] bytes = inputStreamToBytes(getAssets().open("test.avif"));
@@ -50,5 +58,37 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
         return buffer.toByteArray();
+    }
+
+    public void select(View view) {
+        TakePhotoUtil.startPickOne(this, true, new TakeOnePhotoListener() {
+            @Override
+            public void onSuccess(String path) {
+                Log.w("onsuccess","path:"+path);
+                File file = new File(path);
+                File file1 = new File(file.getParentFile(),file.getName()+".avif");
+                try {
+                  boolean success =   AvifEncoder.encodeToAvif(path,file1.getAbsolutePath());
+                    Log.w("result","success:"+success);
+                }catch (Throwable throwable){
+                    throwable.printStackTrace();
+                }
+                Log.w("result",file1.length()/1024+"k,"+file1.getAbsolutePath());
+
+
+
+            }
+
+            @Override
+            public void onFail(String path, String msg) {
+
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
+
     }
 }

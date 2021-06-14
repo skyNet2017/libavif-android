@@ -3,6 +3,7 @@ project(libavif)
 
 
 add_subdirectory(libavif)
+find_library( log-lib log )
 
 set(SRC_FILES
         avif_decoder_jni.c
@@ -15,4 +16,4 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden")
 
 add_library(avif-jni SHARED ${SRC_FILES})
 
-target_link_libraries(avif-jni jnigraphics avif log)
+target_link_libraries(avif-jni jnigraphics avif log   ${log-lib})

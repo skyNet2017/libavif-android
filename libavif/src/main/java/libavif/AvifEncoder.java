@@ -2,25 +2,35 @@ package libavif;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.io.File;
 import java.nio.ByteBuffer;
 
 public class AvifEncoder {
     static {
-        System.loadLibrary("avif-jni");
+        try {
+            System.loadLibrary("avif-jni");
+        }catch (Throwable throwable){
+            throwable.printStackTrace();
+        }
+
     }
 
-    public static boolean encodeToAvif(String  path){
+    public static boolean encodeToAvif(String  inputPath,String outputPath){
         //Bitmap像素点的色彩通道排列顺序是RGBA
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
+        Bitmap bitmap = BitmapFactory.decodeFile(inputPath);
         byte[] bytes = bitmap2RGBA(bitmap);
-        return encode(bytes,path) == 0;
+        int code =  encode2(bytes,bitmap.getWidth(),bitmap.getHeight(),bitmap.getRowBytes(),outputPath);
+        Log.w("result","code:"+code);
+        return code==0;
 
 
     }
 
     public static native int encode(byte[] bitmapBytesRGBA,String outPath);
+
+    public static native int encode2(byte[] bitmapBytesRGBA,int width,int height,long rowBytes,String outPath);
 
     public static byte[] bitmap2RGB(Bitmap bitmap) {
         int bytes = bitmap.getByteCount();  //返回可用于储存此位图像素的最小字节数
